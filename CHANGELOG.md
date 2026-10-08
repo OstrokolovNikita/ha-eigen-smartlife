@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0 - 2026-10-08
+## v0.2.0 - 2026-10-08
 
 Smart plug support.
 
@@ -11,7 +11,7 @@ Smart plug support.
 - Electrical sensor scaling is taken from the live Tuya Device Sharing specification.
 - Keep unsupported Smart Life products diagnostics-only.
 
-## 0.1.1 - 2026-10-08
+## v0.1.1 - 2026-10-08
 
 Device discovery update.
 
@@ -20,7 +20,7 @@ Device discovery update.
 - Add a `supported` marker to each diagnostic device.
 - This enables accurate profile development for new devices from real Device Sharing `status`, `function`, `status_range` and local DP strategy data without guessing codes.
 
-## 0.1.0 - 2026-10-08
+## v0.1.0 - 2026-10-08
 
 Initial test release.
 

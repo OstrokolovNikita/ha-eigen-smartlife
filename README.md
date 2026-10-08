@@ -108,3 +108,17 @@ Every functional change should increment the integration version, update `CHANGE
 ## License
 
 MIT
+
+
+## Release model
+
+Development commits on `main` are validated by HACS, Home Assistant hassfest
+and Python compile checks. Published versions use semantic versions from
+`custom_components/eigen_smartlife/manifest.json`.
+
+When the manifest version changes, GitHub Actions automatically creates the
+matching GitHub Release and tag (for example `v0.2.0`). HACS then sees the
+release as a normal versioned update instead of a raw commit.
+
+During rapid development HACS may cache repository metadata for a short time;
+a manual repository refresh can reveal a new release sooner.
