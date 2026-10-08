@@ -42,6 +42,9 @@
       },
       "chiller": {
         "name": "Fresh zone"
+      },
+      "outlet": {
+        "name": "Outlet"
       }
     },
     "number": {
@@ -50,6 +53,51 @@
       },
       "freezer_temperature": {
         "name": "Freezer temperature"
+      },
+      "countdown": {
+        "name": "Countdown"
+      }
+    },
+    "sensor": {
+      "power": {
+        "name": "Power"
+      },
+      "voltage": {
+        "name": "Voltage"
+      },
+      "current": {
+        "name": "Current"
+      },
+      "energy": {
+        "name": "Total energy"
+      }
+    },
+    "binary_sensor": {
+      "problem": {
+        "name": "Problem"
+      }
+    },
+    "lock": {
+      "child_lock": {
+        "name": "Child lock"
+      }
+    },
+    "select": {
+      "restore_state": {
+        "name": "Power restore behavior",
+        "state": {
+          "power_off": "Stay off",
+          "power_on": "Turn on",
+          "last": "Restore previous state"
+        }
+      },
+      "indicator_mode": {
+        "name": "Indicator mode",
+        "state": {
+          "relay": "Follow relay",
+          "pos": "Locator",
+          "none": "Off"
+        }
       }
     }
   }

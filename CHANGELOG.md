@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.0 - 2026-10-08
+
+Smart plug support.
+
+- Add Smart Life Measure socket profile for product ID `999hv2s5ckom5zw2`.
+- Add outlet control, current power, voltage, current and total energy entities.
+- Add fault/problem diagnostic, child lock, power restore behavior and indicator mode.
+- Add configurable countdown timer.
+- Electrical sensor scaling is taken from the live Tuya Device Sharing specification.
+- Keep unsupported Smart Life products diagnostics-only.
+
 ## 0.1.1 - 2026-10-08
 
 Device discovery update.

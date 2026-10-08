@@ -1,10 +1,10 @@
 # Eigen SmartLife
 
-Independent Home Assistant custom integration for supported **Eigen** appliances connected through **Smart Life / Tuya Device Sharing**.
+Independent Home Assistant custom integration for supported **Eigen appliances and selected Smart Life / Tuya devices** through **Tuya Device Sharing**.
 
 It does **not** depend on Home Assistant's official `tuya` integration, LocalTuya, Tuya Local, Xtend Tuya, or a Tuya IoT Developer cloud project.
 
-> Status: **0.1.1 test release**. The Eigen Stark-R01A refrigerator is the first supported device. The Eigen BD/ED / Foss dishwasher is discovery-only until real Device Sharing DP data is captured while the appliance is online.
+> Status: **0.2.0 test release**. The Eigen Stark-R01A refrigerator and Smart Life Measure socket are supported. The Eigen BD/ED / Foss dishwasher remains discovery-only until real DP data is available while it is online.
 
 ## Supported devices
 
@@ -20,6 +20,25 @@ Current entities:
 - Freezer target temperature (`cold_temp_set`)
 
 Temperature limits are read from the live Tuya specification when available, with verified profile values used only as fallback.
+
+### Smart Life Measure socket
+
+Product ID: `999hv2s5ckom5zw2`
+
+Current entities:
+
+- Outlet power (`switch_1`)
+- Current power (`cur_power`)
+- Voltage (`cur_voltage`)
+- Current (`cur_current`)
+- Total energy (`add_ele`)
+- Fault/problem bitmap (`fault`)
+- Child lock (`child_lock`)
+- Power restore behavior (`relay_status`)
+- Indicator mode (`light_mode`)
+- Countdown timer in seconds (`countdown_1`)
+
+Read-only electrical values use the scale reported by the live Tuya specification.
 
 ### Eigen BD/ED / Foss dishwasher
 
@@ -70,10 +89,9 @@ Use **Settings → Devices & services → Eigen SmartLife → three dots → Dow
 
 Diagnostics intentionally include product ID, DP status/specification and local strategy metadata needed to add appliance support, but exclude credentials and local secrets.
 
-## Known limitations in 0.1.1
+## Known limitations in 0.2.0
 
-- Only the four already verified refrigerator DPs are exposed.
-- The dishwasher does not yet expose entities.
+- The dishwasher does not yet expose entities because it was offline when its Device Sharing DP specification was captured.
 - Adding/removing Smart Life devices after integration startup may require reloading the integration.
 - Cloud availability depends on Smart Life/Tuya Device Sharing services.
 

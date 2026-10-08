@@ -1,9 +1,7 @@
 """Profile for Eigen Stark-R01A refrigerator."""
 
+from homeassistant.components.number import NumberDeviceClass
 from homeassistant.const import Platform, UnitOfTemperature
-
-# EntityProfile is imported lazily by devices/__init__.py to avoid a circular import.
-# Tuples here deliberately contain plain constructor arguments and are converted below.
 
 
 def _build_entities():
@@ -31,6 +29,7 @@ def _build_entities():
             maximum=8,
             step=1,
             unit=UnitOfTemperature.CELSIUS,
+            device_class=NumberDeviceClass.TEMPERATURE,
         ),
         EntityProfile(
             platform=Platform.NUMBER,
@@ -41,6 +40,7 @@ def _build_entities():
             maximum=20,
             step=1,
             unit=UnitOfTemperature.CELSIUS,
+            device_class=NumberDeviceClass.TEMPERATURE,
         ),
     )
 

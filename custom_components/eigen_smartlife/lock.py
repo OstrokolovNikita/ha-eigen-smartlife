@@ -1,59 +1,46 @@
-"""Switch entities for Eigen SmartLife."""
+"""Lock entities for Eigen SmartLife."""
 
 from __future__ import annotations
 
 from tuya_sharing import CustomerDevice, Manager
 
-from homeassistant.components.switch import SwitchEntity
+from homeassistant.components.lock import LockEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .coordinator import EigenRuntime
-from .devices import DeviceProfile, EntityProfile, get_profile
+from .devices import DeviceProfile, get_profile
 from .entity import EigenEntity
 
 
-class EigenSwitch(EigenEntity, SwitchEntity):
-    """Boolean Tuya DP exposed as a Home Assistant switch."""
-
-    def __init__(
-        self,
-        device: CustomerDevice,
-        manager: Manager,
-        device_profile: DeviceProfile,
-        entity_profile: EntityProfile,
-    ) -> None:
-        super().__init__(device, manager, device_profile, entity_profile)
-        self._attr_device_class = entity_profile.device_class
+class EigenLock(EigenEntity, LockEntity):
+    """Boolean Tuya DP exposed as a Home Assistant lock."""
 
     @property
-    def is_on(self) -> bool | None:
+    def is_locked(self) -> bool | None:
         value = self._status()
         return value if isinstance(value, bool) else None
 
-    async def async_turn_on(self, **kwargs) -> None:
+    async def async_lock(self, **kwargs) -> None:
         await self._async_send_value(True)
 
-    async def async_turn_off(self, **kwargs) -> None:
+    async def async_unlock(self, **kwargs) -> None:
         await self._async_send_value(False)
 
 
 def _entities_for_device(
     device: CustomerDevice, manager: Manager, profile: DeviceProfile
-) -> list[EigenSwitch]:
-    entities: list[EigenSwitch] = []
+) -> list[EigenLock]:
     function = getattr(device, "function", {})
     status = getattr(device, "status", {})
-
-    for definition in profile.entities:
-        if definition.platform is not Platform.SWITCH:
-            continue
-        if definition.code not in function and definition.code not in status:
-            continue
-        entities.append(EigenSwitch(device, manager, profile, definition))
-    return entities
+    return [
+        EigenLock(device, manager, profile, definition)
+        for definition in profile.entities
+        if definition.platform is Platform.LOCK
+        and (definition.code in function or definition.code in status)
+    ]
 
 
 async def async_setup_entry(
@@ -61,17 +48,16 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
-    """Set up Eigen switches."""
+    """Set up Eigen lock entities."""
     runtime: EigenRuntime = entry.runtime_data
     manager = runtime.manager
     if manager is None:
         return
 
-    entities: list[EigenSwitch] = []
+    entities: list[EigenLock] = []
     for device in manager.device_map.values():
         profile = get_profile(getattr(device, "product_id", None))
         if profile is None or profile.discovery_only:
             continue
         entities.extend(_entities_for_device(device, manager, profile))
-
     async_add_entities(entities)

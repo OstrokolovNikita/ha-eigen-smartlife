@@ -1,10 +1,12 @@
-"""Switch entities for Eigen SmartLife."""
+"""Select entities for Eigen SmartLife."""
 
 from __future__ import annotations
 
+import json
+
 from tuya_sharing import CustomerDevice, Manager
 
-from homeassistant.components.switch import SwitchEntity
+from homeassistant.components.select import SelectEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
@@ -15,8 +17,22 @@ from .devices import DeviceProfile, EntityProfile, get_profile
 from .entity import EigenEntity
 
 
-class EigenSwitch(EigenEntity, SwitchEntity):
-    """Boolean Tuya DP exposed as a Home Assistant switch."""
+def _live_options(device: CustomerDevice, profile: EntityProfile) -> list[str]:
+    function = getattr(device, "function", {})
+    specification = function.get(profile.code) if isinstance(function, dict) else None
+    values = getattr(specification, "values", None)
+    if values:
+        try:
+            parsed = json.loads(values) if isinstance(values, str) else values
+        except (TypeError, json.JSONDecodeError):
+            parsed = None
+        if isinstance(parsed, dict) and isinstance(parsed.get("range"), list):
+            return [str(option) for option in parsed["range"]]
+    return list(profile.options)
+
+
+class EigenSelect(EigenEntity, SelectEntity):
+    """Enum Tuya DP exposed as a Home Assistant select."""
 
     def __init__(
         self,
@@ -26,34 +42,28 @@ class EigenSwitch(EigenEntity, SwitchEntity):
         entity_profile: EntityProfile,
     ) -> None:
         super().__init__(device, manager, device_profile, entity_profile)
-        self._attr_device_class = entity_profile.device_class
+        self._attr_options = _live_options(device, entity_profile)
 
     @property
-    def is_on(self) -> bool | None:
+    def current_option(self) -> str | None:
         value = self._status()
-        return value if isinstance(value, bool) else None
+        return value if isinstance(value, str) else None
 
-    async def async_turn_on(self, **kwargs) -> None:
-        await self._async_send_value(True)
-
-    async def async_turn_off(self, **kwargs) -> None:
-        await self._async_send_value(False)
+    async def async_select_option(self, option: str) -> None:
+        await self._async_send_value(option)
 
 
 def _entities_for_device(
     device: CustomerDevice, manager: Manager, profile: DeviceProfile
-) -> list[EigenSwitch]:
-    entities: list[EigenSwitch] = []
+) -> list[EigenSelect]:
     function = getattr(device, "function", {})
     status = getattr(device, "status", {})
-
-    for definition in profile.entities:
-        if definition.platform is not Platform.SWITCH:
-            continue
-        if definition.code not in function and definition.code not in status:
-            continue
-        entities.append(EigenSwitch(device, manager, profile, definition))
-    return entities
+    return [
+        EigenSelect(device, manager, profile, definition)
+        for definition in profile.entities
+        if definition.platform is Platform.SELECT
+        and (definition.code in function or definition.code in status)
+    ]
 
 
 async def async_setup_entry(
@@ -61,17 +71,16 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
-    """Set up Eigen switches."""
+    """Set up Eigen select entities."""
     runtime: EigenRuntime = entry.runtime_data
     manager = runtime.manager
     if manager is None:
         return
 
-    entities: list[EigenSwitch] = []
+    entities: list[EigenSelect] = []
     for device in manager.device_map.values():
         profile = get_profile(getattr(device, "product_id", None))
         if profile is None or profile.discovery_only:
             continue
         entities.extend(_entities_for_device(device, manager, profile))
-
     async_add_entities(entities)

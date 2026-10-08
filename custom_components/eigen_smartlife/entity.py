@@ -15,7 +15,7 @@ from .devices import DeviceProfile, EntityProfile
 
 
 class EigenEntity(Entity):
-    """Base class for one Eigen DP entity."""
+    """Base class for one Eigen SmartLife DP entity."""
 
     _attr_has_entity_name = True
     _attr_should_poll = False
@@ -35,9 +35,10 @@ class EigenEntity(Entity):
         self._attr_unique_id = f"{device.id}_{entity_profile.code}"
         self._attr_translation_key = entity_profile.translation_key
         self._attr_icon = entity_profile.icon
+        self._attr_entity_category = entity_profile.entity_category
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, device.id)},
-            manufacturer="Eigen",
+            manufacturer=device_profile.manufacturer,
             name=device.name,
             model=device_profile.model,
         )
