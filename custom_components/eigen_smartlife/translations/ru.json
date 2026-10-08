@@ -1,0 +1,56 @@
+{
+  "title": "Eigen SmartLife",
+  "config": {
+    "error": {
+      "login_error": "Ошибка авторизации Smart Life ({code}): {msg}",
+      "cannot_connect": "Не удалось подключиться к Smart Life/Tuya. Повторите попытку."
+    },
+    "abort": {
+      "already_configured": "Эта учётная запись Smart Life уже добавлена."
+    },
+    "step": {
+      "user": {
+        "title": "Подключение Smart Life",
+        "description": "Введите User Code из Smart Life: Я → Настройки → Учётная запись и безопасность → User Code. Tuya IoT Developer, Cloud Project, Access ID и Secret не нужны.",
+        "data": {
+          "user_code": "User Code"
+        },
+        "data_description": {
+          "user_code": "Код чувствителен к регистру."
+        }
+      },
+      "scan": {
+        "title": "Авторизация Eigen SmartLife",
+        "description": "Откройте Smart Life, отсканируйте QR-код ниже и подтвердите доступ. Затем вернитесь сюда и нажмите «Отправить». ",
+        "data": {
+          "QR": "QR-код"
+        }
+      },
+      "reauth_user_code": {
+        "title": "Повторное подключение Smart Life",
+        "description": "Введите актуальный User Code Smart Life, чтобы снова авторизовать Eigen SmartLife.",
+        "data": {
+          "user_code": "User Code"
+        }
+      }
+    }
+  },
+  "entity": {
+    "switch": {
+      "child_lock": {
+        "name": "Блокировка управления"
+      },
+      "chiller": {
+        "name": "Зона свежести"
+      }
+    },
+    "number": {
+      "fridge_temperature": {
+        "name": "Температура холодильной камеры"
+      },
+      "freezer_temperature": {
+        "name": "Температура морозильной камеры"
+      }
+    }
+  }
+}

@@ -1,0 +1,42 @@
+name: Bug report
+description: Report a reproducible Eigen SmartLife problem
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "Please attach sanitized Home Assistant diagnostics from Eigen SmartLife."
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant version
+    validations:
+      required: true
+  - type: input
+    id: integration_version
+    attributes:
+      label: Eigen SmartLife version
+    validations:
+      required: true
+  - type: dropdown
+    id: device
+    attributes:
+      label: Device
+      options:
+        - Eigen Stark-R01A refrigerator
+        - Eigen BD/ED / Foss dishwasher
+        - Other Eigen device
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What happened and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs / diagnostics
+      description: Do not paste access tokens, refresh tokens or local keys.

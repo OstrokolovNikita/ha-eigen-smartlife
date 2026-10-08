@@ -1,0 +1,56 @@
+{
+  "title": "Eigen SmartLife",
+  "config": {
+    "error": {
+      "login_error": "Smart Life authorization error ({code}): {msg}",
+      "cannot_connect": "Unable to connect to Smart Life/Tuya. Try again."
+    },
+    "abort": {
+      "already_configured": "This Smart Life account is already configured."
+    },
+    "step": {
+      "user": {
+        "title": "Connect Smart Life",
+        "description": "Enter the User Code from Smart Life: Me → Settings → Account and Security → User Code. No Tuya IoT Developer account or cloud project is required.",
+        "data": {
+          "user_code": "User Code"
+        },
+        "data_description": {
+          "user_code": "The code is case-sensitive."
+        }
+      },
+      "scan": {
+        "title": "Authorize Eigen SmartLife",
+        "description": "Open Smart Life, scan the QR code below and approve access. Then return here and select Submit.",
+        "data": {
+          "QR": "QR code"
+        }
+      },
+      "reauth_user_code": {
+        "title": "Reconnect Smart Life",
+        "description": "Enter the current Smart Life User Code to authorize Eigen SmartLife again.",
+        "data": {
+          "user_code": "User Code"
+        }
+      }
+    }
+  },
+  "entity": {
+    "switch": {
+      "child_lock": {
+        "name": "Control lock"
+      },
+      "chiller": {
+        "name": "Fresh zone"
+      }
+    },
+    "number": {
+      "fridge_temperature": {
+        "name": "Refrigerator temperature"
+      },
+      "freezer_temperature": {
+        "name": "Freezer temperature"
+      }
+    }
+  }
+}

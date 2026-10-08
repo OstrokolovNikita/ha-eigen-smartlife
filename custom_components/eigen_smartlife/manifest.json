@@ -1,0 +1,14 @@
+{
+  "domain": "eigen_smartlife",
+  "name": "Eigen SmartLife",
+  "codeowners": ["@OstrokolovNikita"],
+  "config_flow": true,
+  "documentation": "https://github.com/OstrokolovNikita/ha-eigen-smartlife",
+  "issue_tracker": "https://github.com/OstrokolovNikita/ha-eigen-smartlife/issues",
+  "integration_type": "hub",
+  "iot_class": "cloud_push",
+  "loggers": ["tuya_sharing"],
+  "requirements": ["tuya-device-sharing-sdk==0.2.15"],
+  "single_config_entry": true,
+  "version": "0.1.0"
+}
