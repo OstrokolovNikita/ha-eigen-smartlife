@@ -4,7 +4,7 @@ Independent Home Assistant custom integration for supported **Eigen** appliances
 
 It does **not** depend on Home Assistant's official `tuya` integration, LocalTuya, Tuya Local, Xtend Tuya, or a Tuya IoT Developer cloud project.
 
-> Status: **0.1.0 test release**. The Eigen Stark-R01A refrigerator is the first supported device. The Eigen BD/ED / Foss dishwasher is discovery-only until real Device Sharing DP data is captured while the appliance is online.
+> Status: **0.1.1 test release**. The Eigen Stark-R01A refrigerator is the first supported device. The Eigen BD/ED / Foss dishwasher is discovery-only until real Device Sharing DP data is captured while the appliance is online.
 
 ## Supported devices
 
@@ -32,7 +32,7 @@ The integration recognizes the product for sanitized diagnostics, but intentiona
 - UI-only setup with Smart Life **User Code + QR authorization**
 - `tuya-device-sharing-sdk>=0.2.15` (0.2.15 is the current tested baseline)
 - Cloud push through Tuya MQTT where supported
-- Product-scoped device loading: unrelated Smart Life devices are not imported
+- Product-scoped entity loading: unsupported Smart Life devices are not imported into Home Assistant; they are visible only in sanitized diagnostics for profile development
 - Stable HA device/entity identifiers
 - Automatic Device Sharing token refresh persistence
 - Sanitized diagnostics: no access token, refresh token, local key, UUID or IP address
@@ -70,7 +70,7 @@ Use **Settings → Devices & services → Eigen SmartLife → three dots → Dow
 
 Diagnostics intentionally include product ID, DP status/specification and local strategy metadata needed to add appliance support, but exclude credentials and local secrets.
 
-## Known limitations in 0.1.0
+## Known limitations in 0.1.1
 
 - Only the four already verified refrigerator DPs are exposed.
 - The dishwasher does not yet expose entities.

@@ -24,7 +24,6 @@ from .const import (
     CONF_TERMINAL_ID,
     CONF_TOKEN_INFO,
     CONF_USER_CODE,
-    LOGGER,
     SIGNAL_NEW_DEVICE,
     SIGNAL_REMOVE_DEVICE,
     SIGNAL_UPDATE,
@@ -67,6 +66,7 @@ class EigenRuntime(SharingDeviceListener):
         self.hass = hass
         self.entry = entry
         self.manager: Manager | None = None
+        self.diagnostic_devices: list[CustomerDevice] = []
 
     def initialize(self) -> None:
         """Initialize the blocking Tuya client in HA's executor."""
@@ -82,7 +82,7 @@ class EigenRuntime(SharingDeviceListener):
         manager.add_device_listener(self)
 
         try:
-            load_eigen_devices(manager)
+            self.diagnostic_devices = load_eigen_devices(manager)
         except requests.exceptions.RequestException as err:
             raise ConfigEntryNotReady("Unable to connect to Tuya Device Sharing") from err
         except ApiRequestException as err:

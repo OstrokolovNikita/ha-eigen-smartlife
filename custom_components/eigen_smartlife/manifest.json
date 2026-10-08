@@ -10,5 +10,5 @@
   "loggers": ["tuya_sharing"],
   "requirements": ["tuya-device-sharing-sdk>=0.2.15"],
   "single_config_entry": true,
-  "version": "0.1.0"
+  "version": "0.1.1"
 }

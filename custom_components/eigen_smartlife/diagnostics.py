@@ -37,11 +37,13 @@ def _namespace_map(value: Any) -> Any:
 
 def _device_data(device: CustomerDevice) -> dict[str, Any]:
     """Return useful DP diagnostics without credentials or local secrets."""
+    product_id = getattr(device, "product_id", None)
     return {
         "id_hash": _safe_device_id(device.id),
+        "supported": get_profile(product_id) is not None,
         "name": device.name,
         "category": getattr(device, "category", None),
-        "product_id": getattr(device, "product_id", None),
+        "product_id": product_id,
         "product_name": getattr(device, "product_name", None),
         "online": getattr(device, "online", None),
         "support_local": getattr(device, "support_local", False),
@@ -69,9 +71,5 @@ async def async_get_config_entry_diagnostics(
         "connected": True,
         "endpoint": manager.customer_api.endpoint,
         "mqtt_connected": mqtt_connected,
-        "devices": [
-            _device_data(device)
-            for device in manager.device_map.values()
-            if get_profile(getattr(device, "product_id", None)) is not None
-        ],
+        "devices": [_device_data(device) for device in runtime.diagnostic_devices],
     }

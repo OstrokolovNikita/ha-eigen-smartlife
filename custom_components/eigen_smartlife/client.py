@@ -24,16 +24,49 @@ def _normalize_status(device: CustomerDevice) -> None:
     device.status = normalized
 
 
-def load_eigen_devices(manager: Manager) -> None:
-    """Load only known Eigen products into the manager cache.
+def _enrich_device(manager: Manager, device: CustomerDevice) -> None:
+    """Fetch Device Sharing specification/strategy data for diagnostics."""
+    product_id = getattr(device, "product_id", None)
 
-    This intentionally avoids Manager.update_device_cache(), which enriches every
-    Tuya device in the user's homes. Eigen SmartLife is product-scoped and should
-    neither enumerate nor process unrelated Smart Life devices.
+    for updater_name in (
+        "update_device_specification",
+        "update_device_strategy_info",
+        "update_device_report_type",
+    ):
+        updater = getattr(manager.device_repository, updater_name)
+        try:
+            updater(device)
+        except ApiRequestException as err:
+            LOGGER.debug(
+                "Tuya enrichment %s unavailable for %s (%s): %s",
+                updater_name,
+                product_id,
+                device.id,
+                err,
+            )
+        except (KeyError, TypeError, ValueError) as err:
+            LOGGER.debug(
+                "Unexpected Tuya enrichment payload in %s for %s (%s): %s",
+                updater_name,
+                product_id,
+                device.id,
+                err,
+            )
+
+
+def load_eigen_devices(manager: Manager) -> list[CustomerDevice]:
+    """Load supported entities while discovering all Smart Life devices.
+
+    Only devices with an explicit Eigen SmartLife profile are inserted into the
+    manager cache and exposed in Home Assistant. All authorized Smart Life
+    devices are enriched into a separate diagnostics snapshot so new profiles
+    can be built from real DP data without guessing.
     """
     manager.device_map.clear()
     homes = manager.home_repository.query_homes()
     manager.user_homes = homes
+
+    discovered_devices: list[CustomerDevice] = []
 
     for home in homes:
         response = manager.customer_api.get(
@@ -43,38 +76,12 @@ def load_eigen_devices(manager: Manager) -> None:
             continue
 
         for raw_device in response.get("result", []):
-            product_id = raw_device.get("product_id")
-            if product_id not in PROFILES:
-                continue
-
             device = CustomerDevice(**raw_device)
             _normalize_status(device)
+            _enrich_device(manager, device)
+            discovered_devices.append(device)
 
-            # Enrichment APIs vary by product. One unsupported endpoint must not
-            # prevent the whole integration from starting.
-            for updater_name in (
-                "update_device_specification",
-                "update_device_strategy_info",
-                "update_device_report_type",
-            ):
-                updater = getattr(manager.device_repository, updater_name)
-                try:
-                    updater(device)
-                except ApiRequestException as err:
-                    LOGGER.debug(
-                        "Tuya enrichment %s unavailable for %s (%s): %s",
-                        updater_name,
-                        product_id,
-                        device.id,
-                        err,
-                    )
-                except (KeyError, TypeError, ValueError) as err:
-                    LOGGER.debug(
-                        "Unexpected Tuya enrichment payload in %s for %s (%s): %s",
-                        updater_name,
-                        product_id,
-                        device.id,
-                        err,
-                    )
+            if getattr(device, "product_id", None) in PROFILES:
+                manager.device_map[device.id] = device
 
-            manager.device_map[device.id] = device
+    return discovered_devices
