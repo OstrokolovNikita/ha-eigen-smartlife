@@ -30,7 +30,7 @@ The integration recognizes the product for sanitized diagnostics, but intentiona
 ## Architecture
 
 - UI-only setup with Smart Life **User Code + QR authorization**
-- `tuya-device-sharing-sdk==0.2.15`
+- `tuya-device-sharing-sdk>=0.2.15` (0.2.15 is the current tested baseline)
 - Cloud push through Tuya MQTT where supported
 - Product-scoped device loading: unrelated Smart Life devices are not imported
 - Stable HA device/entity identifiers
